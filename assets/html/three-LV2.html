@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<!-- Pixel Admin's stylesheets -->
+	<link href="../stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/pixel-admin.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/widgets.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/pages.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/rtl.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/themes.min.css" rel="stylesheet" type="text/css">
+
+	<body>
+		<script>
+			var init = [];
+		</script>
+		<div class="row">
+			<div class="col-sm-12">
+				<script>
+					init.push(function() {
+						$("#ui-accordion").accordion({
+							heightStyle: "content",
+							header: "> div > h3"
+						}).sortable({
+							axis: "y",
+							handle: "h3",
+							stop: function(event, ui) {
+								// IE doesn't register the blur when sorting
+								// so trigger focusout handlers to remove .ui-state-focus
+								ui.item.children("h3").triggerHandler("focusout");
+							}
+						});
+					});
+				</script>
+				<!-- / Javascript -->
+
+				<div class="panel panel-info panel-dark">
+					<div class="panel-heading">
+						<span class="panel-title">three.js Lv.2</span>
+					</div>
+					<div class="panel-body">
+						<div id="ui-accordion">
+							<div class="group">
+								<h3>相机控件</h3>
+								<div>
+									<h4>OrbitControls</h4> 创建
+									<pre>&lt;script src="js/OrbitControls.js">&lt;/script></pre> 设置
+									<pre>controls = new THREE.OrbitControls(camera, render.domElement);
+controlsmaxPolarAngle(0.5);
+controlsminDistance(1); 
+controlsmaxDistance(15); 
+									
+动画中添加：controls.update();</pre> 参数
+									<pre>相机位置：camera.position.x
+视点位置：controls.center.x</pre>
+								</div>
+							</div>
+							<!--group-->
+
+							<div class="group">
+								<h3>获得坐标点</h3>
+								<div>
+									<h4>取得坐标点</h4> 创建
+									<pre>function getposition(event) {
+event.preventDefault();
+var vector = new THREE.Vector3(); //三维坐标对象
+vector.set(
+(event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1,0.5);
+vector.unproject(camera);
+var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+var intersects = raycaster.intersectObjects(scene.children);
+if(intersects.length > 0) {
+	var selected = intersects[0]; //取第一个物体
+	$("#selectx").html(selected.point.x)
+	$("#selecty").html(selected.point.y)
+	$("#selectz").html(selected.point.z)
+	}
+}
+document.addEventListener('click', getposition, false);</pre>
+									
+								</div>
+							</div>
+							<!--group-->
+							
+							<div class="group">
+								<h3>获取点击对象</h3>
+								<div>
+									<h4>取得坐标点</h4> 创建
+									<pre>function dbray() {
+var Sx = event.clientX; 
+var Sy = event.clientY; 
+var x = (Sx / window.innerWidth) * 2 - 1; 
+var y = -(Sy / window.innerHeight) * 2 + 1; 
+var standardVector = new THREE.Vector3(x, y, 0.5);
+var worldVector = standardVector.unproject(camera);
+var ray = worldVector.sub(camera.position).normalize();
+var raycaster = new THREE.Raycaster(camera.position, ray);
+					
+		
+var jigui = raycaster.intersectObjects([zujian1, zujian2, zujian3, zujian4, zujian5, zujian6, zujian7, zujian8, zujian9, zujian10]);
+if(jigui.length > 1) {
+	if(jigui[0].object.position.z == 0) {
+		TweenMax.to(jigui[0].object.position, 2, {z: 0.7,ease: Cubic.easeInOut});
+	} else {
+		TweenMax.to(jigui[0].object.position, 2, {z: 0,ease: Cubic.easeInOut});
+	}
+}
+}
+addEventListener('dblclick', dbray); // 监听窗口鼠标双击事件 结束</pre>
+
+<p>参考文档：</p><a href="http://www.yanhuangxueyuan.com/Three.js_course/choose.html">网页文献</a>
+								</div>
+							</div>
+							<!--group-->
+							
+							<div class="group">
+								<h3>指向文本框</h3>
+								<div>
+									<h4>文本框</h4> 方法
+									<pre>function makeTextSprite(message, parameters) {
+	if(parameters === undefined) parameters = {};
+	var fontface = parameters.hasOwnProperty("fontface") ?
+		parameters["fontface"] : "Arial";
+	var fontsize = parameters.hasOwnProperty("fontsize") ?
+		parameters["fontsize"] : 18;
+    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+		parameters["borderThickness"] : 4;
+    var borderColor = parameters.hasOwnProperty("borderColor") ?
+		parameters["borderColor"] : {r: 0,g: 0,b: 0,a: 1.0};
+    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+		parameters["backgroundColor"] : {r: 255,g: 255,b: 255,a: 1.0
+		};
+
+	var canvas = document.createElement('canvas');
+	var context = canvas.getContext('2d');
+	context.font = "Bold " + fontsize + "px " + fontface;
+
+		get size data (height depends only on font size)
+	var metrics = context.measureText(message);
+	var textWidth = metrics.width;
+
+	// background color
+	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," +backgroundColor.b + "," + backgroundColor.a + ")";
+	// border color
+	context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + "," +borderColor.b + "," + borderColor.a + ")";
+	context.lineWidth = borderThickness;
+	roundRect(context, borderThickness / 2, borderThickness / 2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+	// text color
+	context.fillStyle = "rgba(20, 20, 20, 1.0)";
+	context.fillText(message, borderThickness, fontsize + borderThickness);
+	// canvas contents will be used for a texture
+	var texture = new THREE.Texture(canvas)
+	texture.needsUpdate = true;
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map: texture,
+	});
+	var sprite = new THREE.Sprite(spriteMaterial);
+		sprite.scale.set(1, 0.5, 0.1);
+	return sprite;
+}</pre> 
+canvas方法
+									<pre>function roundRect(ctx, x, y, w, h, r) {
+	ctx.beginPath();
+	ctx.moveTo(x + r, y);
+	ctx.lineTo(x + w - r, y);
+	ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+	ctx.lineTo(x + w, y + h - r);
+	ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+	ctx.lineTo(x + r, y + h);
+	ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+	ctx.lineTo(x, y + r);
+	ctx.quadraticCurveTo(x, y, x + r, y);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+}</pre>
+实例化
+<pre>
+var num2 = 100;
+function testrr() {
+	num1 += 1;
+	test1 = makeTextSprite(num1, {fontsize: 72,borderColor: {
+			r: 50,
+			g: 50,
+			b: 250,
+			a: 1.0
+		},
+		backgroundColor: {
+			r: 255,
+			g: 255,
+			b: 255,
+			a: 0.5
+		}
+	});
+	test1.position.set(-0.15, 2.2, -2);
+	scene.add(test1);
+	setTimeout(retry, 30000)
+	function retry() {
+		scene.remove(test1);
+		testrr();
+	}
+}
+</pre>
+								</div>
+							</div>
+							<!--group-->
+							
+							
+							<div class="group">
+								<h3>视频</h3>
+								<div>
+									<h4>视频</h4> 创建
+									<pre>video = document.createElement( 'video' );
+	
+	video.src = "video/sintel.ogv";
+	video.load(); 
+	
+	
+	videoImage = document.createElement( 'canvas' );
+	videoImage.width = 480;
+	videoImage.height = 204;
+
+	videoImageContext = videoImage.getContext( '2d' );
+	videoImageContext.fillStyle = '#000000';
+	videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
+
+	videoTexture = new THREE.Texture( videoImage );
+	videoTexture.minFilter = THREE.LinearFilter;
+	videoTexture.magFilter = THREE.LinearFilter;
+	
+	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+	var movieGeometry = new THREE.PlaneGeometry( 1,0.55,1, 1);
+	movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+	movieScreen.position.set(3.42, 1, 0.061);
+	scene.add(movieScreen);
+	video.play();</pre>
+	 视频控制，放在动画中
+									<pre>if ( video.readyState === video.HAVE_ENOUGH_DATA ){
+		videoImageContext.drawImage( video, 0, 0 );
+		if ( videoTexture ) 
+		videoTexture.needsUpdate = true;
+	}
+if ( keyboard.pressed("p")){
+		video.play();
+	}
+if ( keyboard.pressed("x") ){
+	 	video.pause();
+	 	scene.remove(movieScreen);
+}		
+if ( keyboard.pressed("space") ){
+	    video.pause();
+}
+		
+}</pre>
+								</div>
+							</div>
+							<!--group-->
+							
+							<div class="group">
+								<h3>缓动动画</h3>
+								<div>
+									<h4>OrbitControls</h4> 引入
+									<pre>&lt;script type="text/javascript" src="js/TweenMax.js">&lt;"/script></pre> 动画
+									<pre>
+TweenMax.to(camera.position, 2, {
+	x: 0,
+	y: 10,
+	z: 10,
+	ease: Cubic.easeInOut,
+	onComplete: function() {}
+});
+</pre> 参数
+									<pre>相机位置：camera.position.x
+视点位置：controls.center.x</pre>
+								</div>
+							</div>
+							<!--group-->
+							
+							<div class="group">
+								<h3>位移控件</h3>
+								<div>
+									<h4>transformControl</h4> 引入
+									<pre>&lt;script src="js/TransformControls.js">&lt;"/script></pre> 
+									定义
+									<pre> transformControl = new THREE.TransformControls( camera,render.domElement );</pre> 
+									指定对象
+									<pre> transformControl.attach( s4 );</pre>
+								</div>
+							</div>
+							<!--group-->
+							
+							<div class="group">
+								<h3>GUI控件</h3>
+								<div>
+									<h4>transformControl</h4> 引入
+									<pre>&lt;script type="text/javascript" src="js/dat.gui.js">&lt;"/script></pre> 
+									定义
+									<pre> var gui=new dat.GUI();
+    gui.add(方法,"属性名",最小值,最大值);
+    gui.add(controls,"rotationSpeedy",-100,100);</pre> 
+									指定对象
+									<pre> var controls=new function(){
+    this.rotationSpeedx=0;
+    this.camerapositiony=0;
+}</pre>
+动画中添加对象
+<pre> cube.rotation.y+=controls.rotationSpeedy;</pre>
+								</div>
+							</div>
+							<!--group-->
+
+						</div>
+						<!-- / #ui-accordion -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../javascripts/jquery-1.8.3.min.js"></script>
+		<script src="../javascripts/bootstrap.min.js"></script>
+		<script src="../javascripts/pixel-admin.min.js"></script>
+		<script type="text/javascript">
+			init.push(function() {
+				// Javascript code here
+			})
+			window.PixelAdmin.start(init);
+		</script>
+
+	</body>
+
+</html>

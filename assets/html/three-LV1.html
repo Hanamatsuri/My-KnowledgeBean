@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<!-- Pixel Admin's stylesheets -->
+	<link href="../stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/pixel-admin.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/widgets.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/pages.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/rtl.min.css" rel="stylesheet" type="text/css">
+	<link href="../stylesheets/themes.min.css" rel="stylesheet" type="text/css">
+
+	<body>
+		<script>
+			var init = [];
+		</script>
+		<div class="row">
+			<div class="col-sm-12">
+				<script>
+					init.push(function() {
+						$("#ui-accordion").accordion({
+							heightStyle: "content",
+							header: "> div > h3"
+						}).sortable({
+							axis: "y",
+							handle: "h3",
+							stop: function(event, ui) {
+								// IE doesn't register the blur when sorting
+								// so trigger focusout handlers to remove .ui-state-focus
+								ui.item.children("h3").triggerHandler("focusout");
+							}
+						});
+					});
+				</script>
+				<!-- / Javascript -->
+
+				<div class="panel panel-info panel-dark">
+					<div class="panel-heading">
+						<span class="panel-title">three.js Lv.1</span>
+					</div>
+					<div class="panel-body">
+						<div id="ui-accordion">
+							<div class="group">
+								<h3>照相机</h3>
+								<div>
+									<h4>正交相机</h4> 创建
+									<pre>THREE.OrthographicCamera(left, right, top, bottom, near, far)</pre> 设置
+									<pre>var camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10);
+camera.position.set(0, 0, 5);
+camera.lookAt(0,0,0);
+scene.add(camera);</pre>
+									<hr />
+									<h4>透视相机</h4> 创建
+									<pre>THREE.PerspectiveCamera(fov, aspect, near, far)</pre> 设置
+									<pre>var camera = new THREE.PerspectiveCamera(45, 400 / 300, 1, 10);
+camera.position.set(0, 0, 5);
+camera.lookAt(0,0,0);
+scene.add(camera);</pre>
+								</div>
+							</div>
+							<!-- / .group -->
+							<div class="group">
+								<h3>几何形状</h3>
+								<div>
+									<h4>立方体</h4>
+									<pre>THREE.CubeGeometry(x, y, z, x分段, y分段, z分段)</pre>
+									<hr />
+									<h4>平面</h4>
+									<pre>THREE.PlaneGeometry(x, y, x分段, y分段)</pre>
+									<hr />
+									<h4>球体</h4>
+									<pre>THREE.SphereGeometry(半径, 经度切分, 纬度切分, 经度开始角度, 经度跨过角度, 纬度开始角度, 纬度跨过角度)</pre>
+									<hr />
+									<h4>圆形</h4>
+									<pre>THREE.SphereGeometry(半径, 切分, 开始角度, 跨过角度)</pre>
+									<hr />
+									<h4>圆柱体</h4>
+									<pre>THREE.CylinderGeometry(顶半径, 底半径, 高, 半径分段, 高分段, 是否有顶)</pre>
+									<hr />
+									<h4>圆环</h4>
+									<pre>THREE.TorusGeometry(圆环半径, 管道半径, 圆环切面, 管道切面, 显示角度)</pre>
+									<hr />
+									<h4>正四面体、正八面体、正二十面体</h4>
+									<pre>THREE.TetrahedronGeometry(radius, detail)
+THREE.OctahedronGeometry(radius, detail)
+THREE.IcosahedronGeometry(radius, detail)</pre>
+								</div>
+							</div>
+							<!-- / .group -->
+							<div class="group">
+								<h3>材质</h3>
+								<div>
+									<h4>基本材质</h4> 例子
+									<pre>new THREE.MeshBasicMaterial({
+    color: 0xffff00,
+    opacity: 0.75
+});</pre>
+									<pre>
+visible：是否可见，默认为true
+side：渲染面片正面或是反面，默认为正面THREE.FrontSide，可设置为反面THREE.BackSide，或双面THREE.DoubleSide
+wireframe：是否渲染线而非面，默认为false
+color：十六进制RGB颜色，如红色表示为0xff0000
+                                    </pre>
+									<hr />
+
+									<h4>Lambert材质</h4> 例子
+									<pre>new THREE.MeshLambertMaterial({
+    color: 0xffff00;
+    emissive: 0xff0000;//自发光
+})</pre>
+
+									<hr />
+
+									<h4>Phong材质</h4> 例子
+									<pre>material = new THREE.MeshPhongMaterial({
+    color: 0xff0000,
+    specular: 0xffff00,   //反射光
+    shininess: 100   //值越大光斑越小
+});</pre>
+									<hr />
+									<h4>法向量材质</h4> 例子
+									<pre>new THREE.MeshNormalMaterial()</pre>
+
+								</div>
+							</div>
+							<!-- / .group -->
+							<div class="group">
+								<h3>贴图</h3>
+								<div>
+									<h4>简易贴图</h4> 例子
+									<pre>var texture = THREE.ImageUtils.loadTexture('../img/0.png', {}, function() {
+    renderer.render(scene, camera);
+});
+var material = new THREE.MeshLambertMaterial({
+    map: texture
+});</pre>
+									<hr />
+
+									<h4>立方体六面贴图</h4> 例子
+									<pre>var materials = [];
+for (var i = 0; i < 6; ++i) {
+    materials.push(new THREE.MeshBasicMaterial({
+        map: THREE.ImageUtils.loadTexture('../img/' + i + '.png',
+                {}, function() {
+                    renderer.render(scene, camera);
+                }),
+        overdraw: true
+    }));
+}
+
+var cube = new THREE.Mesh(new THREE.CubeGeometry(5, 5, 5),
+        new THREE.MeshFaceMaterial(materials));
+scene.add(cube);</pre>
+									<hr />
+
+									<h4>重复纹理</h4> 例子
+									<pre>texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(4, 4);</pre>
+									<hr />
+								</div>
+							</div>
+							<!-- / .group -->
+
+							<div class="group">
+								<h3>网格Mesh</h3>
+								<div>
+									<h4>mesh</h4> 创建
+									<pre>var material = new THREE.MeshLambertMaterial({
+    color: 0xffff00
+});
+var geometry = new THREE.CubeGeometry(1, 2, 3);
+var mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);</pre>
+									<hr />
+									<h4>更改属性</h4> 例子
+									<pre>var material = new THREE.MeshLambertMaterial({
+    color: 0xffff00
+});
+<font style="color: #999;">var geometry = new THREE.CubeGeometry(1, 2, 3);
+var mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);</font>
+mesh.material = new THREE.MeshLambertMaterial({
+    color: 0xff0000
+});</pre>
+
+									<h4>位置、缩放、旋转</h4> 例子
+									<pre>mesh.position.z = 1;mesh.position.set(1,1,1)</pre>
+									<pre>mesh.scale.z = 1;mesh.scale.set(1,1,1)</pre>
+									<pre>mesh.rotation.z = 1;mesh.rotation.set(1,1,1)</pre>
+
+								</div>
+							</div>
+							<!-- / .group -->
+
+							<div class="group">
+								<h3>动画</h3>
+								<div>
+									<h4>requestAnimationFrame方法</h4> 创建
+									<pre>function draw() {
+    renderer.render(scene, camera);
+   id = requestAnimationFrame(draw);
+}</pre>
+									<hr />
+									<h4>cancelAnimationFrame取消动画</h4>
+									<pre>
+function stop() {
+    if (id !== null) {
+        cancelAnimationFrame(id);
+        id = null;
+    }
+}</pre>
+
+									<h4>兼容性</h4>
+									<pre>
+var requestAnimationFrame = window.requestAnimationFrame 
+        || window.mozRequestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.msRequestAnimationFrame;
+window.requestAnimationFrame = requestAnimationFrame;</pre>
+									<hr />
+
+									<h4>stat.js监控</h4>
+									<pre>引用：
+&lt;script type="text/javascript" src="stat.js">&lt;script></pre>
+									<pre>声明：
+var stat = null;
+
+function init() {
+    stat = new Stats();
+    stat.domElement.style.position = 'absolute';
+    stat.domElement.style.right = '0px';
+    stat.domElement.style.top = '0px';
+    document.body.appendChild(stat.domElement);
+    // Three.js init ...
+}</pre>
+									<pre>放入动画：
+function draw() {
+    stat.begin();
+
+    mesh.rotation.y = (mesh.rotation.y + 0.01) % (Math.PI * 2);
+    renderer.render(scene, camera);
+
+    stat.end();
+}
+</pre>
+								</div>
+							</div>
+							<!-- / .group -->
+							<div class="group">
+								<h3>外部模型</h3>
+								<div>
+									<h4>外部模型</h4>
+									引入
+		<pre>						
+		&lt;script src="js/DDSLoader.js">&lt;/script>
+		&lt;script src="js/MTLLoader.js" >&lt;/script>
+		&lt;script src="js/OBJLoader87.js">&lt;/script>
+		</pre>							
+									 导入
+									<pre>var mtlLoader = new THREE.MTLLoader();
+				mtlLoader.setPath('obj/');
+				mtlLoader.load('camera.mtl', function(materials) {
+					materials.preload();
+					var objLoader = new THREE.OBJLoader();
+					objLoader.setMaterials(materials);
+					objLoader.setPath('obj/');
+					objLoader.load('camera.obj', function(object) {
+						object.position.set(0.44, 1.6, 1);
+						object.scale.set(0.15, 0.15, 0.15);
+						object.rotation.y = 0.5 * Math.PI;
+						camera01 = object;
+						scene.add(camera01)
+					}, onProgress, onError);
+				});</pre>
+								</div>
+							</div>
+							<!-- / .group -->
+							
+							<div class="group">
+								<h3>光源</h3>
+								<div>
+									<h4>环境光</h4> 创建
+									<pre>var light = new THREE.AmbientLight(0xffffff);</pre>
+									<hr />
+									<h4>点光源</h4> 创建
+									<pre>var light = new THREE.PointLight(颜色, 亮度, 最远距离);
+
+var light = new THREE.PointLight(0xffffff, 2, 100);
+light.position.set(0, 1.5, 2);</pre>
+<hr />
+<h4>平行光</h4> 创建
+<pre>var light = new THREE.PointLight(颜色, 亮度);
+
+var light = new THREE.DirectionalLight();
+light.position.set(2, 5, 3);
+									
+平行光将以矢量(-2, -5, -3)的方向照射到所有平面。</pre>
+
+<hr />
+<h4>聚光灯</h4> 创建
+<pre>THREE.SpotLight(颜色, 亮度, 最远距离, 光张角, 偏离衰减系数)</pre>
+例子（除了设置光源本身的位置，一般还需要设置target）
+<pre>var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+new THREE.MeshLambertMaterial({color: 0x00ff00}));
+var light = new THREE.SpotLight(0xffff00, 1, 100, Math.PI / 6, 25);
+light.target = cube;</pre>
+
+<hr />
+<h4>阴影</h4> 
+<p>能形成阴影的光源只有<code>THREE.DirectionalLight</code>与<code>THREE.SpotLight</code>而相对地，能表现阴影效果的材质只有<code>THREE.LambertMaterial</code>与<code>THREE.PhongMaterial</code>。</p>
+									<pre>首先，我们需要在初始化时，告诉渲染器渲染阴影：
+
+renderer.shadowMapEnabled = true;
+然后，对于光源以及所有要产生阴影的物体调用：
+
+xxx.castShadow = true;
+对于接收阴影的物体调用：
+
+xxx.receiveShadow = true;</pre>
+
+例子
+<pre>renderer = new THREE.WebGLRenderer();
+renderer.shadowMapEnabled = true;
+renderer.shadowMapSoft = true;
+
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(8, 8, 16, 16),
+        new THREE.MeshLambertMaterial({color: 0xcccccc}));
+plane.rotation.x = -Math.PI / 2;
+plane.position.y = -1;
+plane.receiveShadow = true;
+scene.add(plane);
+
+cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+        new THREE.MeshLambertMaterial({color: 0x00ff00}));
+cube.position.x = 2;
+cube.castShadow = true;
+scene.add(cube);
+
+var light = new THREE.SpotLight(0xffff00, 1, 100, Math.PI / 6, 25);
+light.position.set(2, 5, 3);
+light.target = cube;
+light.castShadow = true;
+
+light.shadowCameraNear = 2;
+light.shadowCameraFar = 10;
+light.shadowCameraFov = 30;
+light.shadowCameraVisible = true;
+
+light.shadowMapWidth = 1024;
+light.shadowMapHeight = 1024;
+light.shadowDarkness = 0.3;
+
+scene.add(light);</pre>
+									<hr />
+
+
+								</div>
+							</div>
+							<!-- / .group -->
+
+						</div>
+						<!-- / #ui-accordion -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../javascripts/jquery-1.8.3.min.js"></script>
+		<script src="../javascripts/bootstrap.min.js"></script>
+		<script src="../javascripts/pixel-admin.min.js"></script>
+		<script type="text/javascript">
+			init.push(function() {
+				// Javascript code here
+			})
+			window.PixelAdmin.start(init);
+		</script>
+
+	</body>
+
+</html>
